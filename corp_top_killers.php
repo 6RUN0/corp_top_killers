@@ -19,11 +19,11 @@ global $sourcePage;
 if ($sourcePage->getView() == 'losses'){
     $corptop = new TopList_CorpLosses();
     $smarty->assign('title', "Top Corp Losers");
-    $corptop->addVictimAlliance($allianceid[0]);
+    $corptop->addVictimAlliance($allianceid);
 } else {
     $corptop = new TopList_CorpKills();
     $smarty->assign('title', "Top Corp Killers");
-    $corptop->addInvolvedAlliance($allianceid[0]);
+    $corptop->addInvolvedAlliance($allianceid);
 }
 
 
