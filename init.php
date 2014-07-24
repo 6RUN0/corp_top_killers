@@ -26,7 +26,7 @@ class corp_top_killers {
   function show() {
     global $smarty;
     include_once('mods/corp_top_killers/corp_top_killers.php');
-    $html .= $smarty->fetch('../../../mods/corp_top_killers/corp_top_killers.tpl');
+    $html .= $smarty->fetch(get_tpl('./mods/corp_top_killers/corp_top_killers'));
     return $html;
   }
 
