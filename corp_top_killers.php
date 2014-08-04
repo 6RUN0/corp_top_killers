@@ -7,14 +7,13 @@
  * @version 1.1p1
  */
 
-
 class corp_top_killers {
 
-  function add($page) {
-    $page->addBefore('topLists', 'corp_top_killers::show');
+  function add($pHome) {
+    $pHome->addBefore('topLists', 'corp_top_killers::show');
   }
 
-  function show($page) {
+  function show($pHome) {
 
     global $smarty;
 
@@ -28,7 +27,7 @@ class corp_top_killers {
       $limit = 10;
     }
 
-    if ($page->getView() == 'losses'){
+    if ($pHome->getView() == 'losses') {
       $corptop = new TopList_CorpLosses();
       if(!empty($alliance_id)) {
         $corptop->addVictimAlliance($alliance_id);
@@ -58,7 +57,7 @@ class corp_top_killers {
     }
 
     $corptop->setPodsNoobShips(config::get('podnoobs'));
-    $page->loadTime($corptop);
+    $pHome->loadTime($corptop);
     $corptop->setLimit($limit);
     $corptop->generate();
 
@@ -91,32 +90,22 @@ class corp_top_killers {
       }
 
       $smarty->assign('top', $top);
-      $smarty->assign('comment', 'kills in ' . date('F, Y', mktime(0, 0, 0, self::getMonth_ctk(), 1, self::getYear_ctk())));
+      $smarty->assign('comment', 'kills in ' . self::getDateStr($pHome->getYear(), $pHome->getMonth(), $pHome->getWeek()));
       return $smarty->fetch(get_tpl('./mods/corp_top_killers/corp_top_killers'));
     }
 
   }
 
-  private function getMonth_ctk() {
-    $month = edkURI::getArg('m');
-    $week = edkURI::getArg('w');
-    if (!empty($month)) {
-      return $month;
-    }
-    elseif(!empty($week)) {
-      return date('m', mktime(0, 0, 0, 1, (($week - 1) * 7) + 1, self::getYear_ctk()));
-    }
-    else {
-      return kbdate('m');
-    }
-  }
+  private function getDateStr($year, $month = 0, $week = 0) {
 
-  private function getYear_ctk() {
-    $year = edkURI::getArg('y');
-    if(empty($year)) {
-      $year = kbdate('Y');
+    if(!empty($month)) {
+      $date = date_create("${year}-${month}");
+      return date_format($date, 'F, Y');
     }
-    return $year;
+    if(!empty($week)) {
+      return "Week ${week}, ${year}";
+    }
+
   }
 
 }
