@@ -4,26 +4,26 @@
  * @author Andy Snowden
  * @maintainer boris_t (boris@talovikov.ru)
  * @copyright 2013
- * @version 1.1p1
+ * @version 1.1p3
  */
 
 class corp_top_killers {
 
-  function add($pHome) {
+  static function add($pHome) {
     $pHome->addBefore('topLists', 'corp_top_killers::show');
   }
 
-  function show($pHome) {
+  static function show($pHome) {
 
     global $smarty;
 
     $pilot_id = config::get('cfg_pilotid');
     $corp_id = config::get('cfg_corpid');
     $alliance_id = config::get('cfg_allianceid');
-    $limit = config::get('corp_top_killer_limit');
+    $limit = config::get('corp_top_killers_limit');
 
     if (empty($limit)) {
-      config::set('corp_top_killer_limit', 10);
+      config::set('corp_top_killers_limit', 10);
       $limit = 10;
     }
 
@@ -75,12 +75,12 @@ class corp_top_killers {
       $smarty->assign('bar', $bar->generate());
       $smarty->assign('cnt', $row['cnt']);
 
-      $i = 1;
+      $i = 2;
 
-      while(($row = $corptop->getRow()) && ($i < $limit)) {
+      while(($row = $corptop->getRow())) {
         $corporation = new Corporation($row['crp_id']);
         $bar = new BarGraph($row['cnt'], $max_kl);
-        $top[$i + 1] = array(
+        $top[$i] = array(
           'url' => $corporation->getDetailsURL(),
           'name' => $corporation->getName(),
           'bar' => $bar->generate(),
@@ -96,7 +96,7 @@ class corp_top_killers {
 
   }
 
-  private function getDateStr($year, $month = 0, $week = 0) {
+  private static function getDateStr($year, $month = 0, $week = 0) {
 
     if(!empty($month)) {
       $date = date_create("${year}-${month}");
